@@ -1,7 +1,7 @@
 class Perceptron 
 {
   float[] weights;  // Array of weights
-  float c;          // Learning constant
+  float learningConstant;          // Learning constant
 
   // Constructor
   Perceptron(int n, float c_) 
@@ -12,7 +12,7 @@ class Perceptron
     {
       weights[i] = random(-1,1); 
     }
-    c = c_;
+    learningConstant = c_;
   }
   
   // Funcion para entrenar la red
@@ -26,7 +26,7 @@ class Perceptron
       // Adjust weights based on weightChange * input
       for (int i = 0; i < weights.length; i++) 
       {
-          weights[i] += c * error * inputs[i];         
+          weights[i] += learningConstant * error * inputs[i];         
       }
   }
 

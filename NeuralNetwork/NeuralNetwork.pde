@@ -1,7 +1,11 @@
-// The Nature of Code
+// Carlos Emiliano Castro Trejo 
+// Analysis and Design of Algorithms
+// 20/04/2019
+int numberOfPartitions=3; // Number 
+int[] linesPosition=new int[numberOfPartitions-1];
 
-// A list of points we will use to "train" the perceptron
-Trainer[] training = new Trainer[2000];
+// List of point to train the perceptron
+Trainer[] training = new Trainer[numberOfPartitions*1000];
 // A Perceptron object
 Perceptron ptron;
 
@@ -19,9 +23,22 @@ float f(float x) {
   return 0.4*x+1;
 }
 
-void setup() {
-  size(640, 360);
-
+void setup() 
+{
+  size(840, 560);
+  int division=width/numberOfPartitions;
+  
+  linesPosition[0]=division;
+  if(numberOfPartitions>2)
+  {
+    for(int x=1;x<linesPosition.length;x++)
+    {
+     linesPosition[x]=linesPosition[x-1]+division;
+    }
+  }
+  
+ 
+  
   // The perceptron has 3 inputs -- x, y, and bias
   // Second value is "Learning Constant"
   ptron = new Perceptron(3, 0.00001);  // Learning Constant is low just b/c it's fun to watch, this is not necessarily optimal
@@ -40,6 +57,11 @@ void setup() {
 
 void draw() {
   background(255);
+  strokeWeight(3);
+  for(int x=0;x<linesPosition.length;x++)
+  {
+    line(linesPosition[x],0,linesPosition[x],height);
+  }
   translate(width/2,height/2);
 
   // Draw the line
@@ -60,7 +82,7 @@ void draw() {
   y1 = (-weights[2] - weights[0]*x1)/weights[1];
   x2 = xmax;
   y2 = (-weights[2] - weights[0]*x2)/weights[1];
-  line(x1,y1,x2,y2);
+   line(x1,y1,x2,y2);
 
 
 
