@@ -4,10 +4,12 @@ class Perceptron
   float c;          // Learning constant
 
   // Constructor
-  Perceptron(int n, float c_) {
+  Perceptron(int n, float c_) 
+  {
     weights = new float[n];
     // Initialize the weights randomly
-    for (int i = 0; i < weights.length; i++) {
+    for (int i = 0; i < weights.length; i++) 
+    {
       weights[i] = random(-1,1); 
     }
     c = c_;
