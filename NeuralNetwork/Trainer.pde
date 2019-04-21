@@ -1,6 +1,5 @@
 class Trainer 
 {
-  
   float[] inputs;
   int answer; 
   

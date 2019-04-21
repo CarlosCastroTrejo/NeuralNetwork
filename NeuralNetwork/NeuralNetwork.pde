@@ -1,8 +1,9 @@
 // Carlos Emiliano Castro Trejo 
 // Analysis and Design of Algorithms
 // 20/04/2019
-int numberOfPartitions=3; // Number 
-int[] linesPosition=new int[numberOfPartitions-1];
+
+int numberOfPartitions=4; // Number of divisions in the canvas
+int[] linesPosition=new int[numberOfPartitions-1]; // Array that represents the position of X of the multiple lines in the canvas
 
 // List of point to train the perceptron
 Trainer[] training = new Trainer[numberOfPartitions*1000];
@@ -13,10 +14,11 @@ Perceptron ptron;
 int count = 0;
 
 // Coordinate space
-float xmin = -400;
-float ymin = -100;
-float xmax =  400;
-float ymax =  100;
+  int xmin = 0;
+  int ymin = 0;
+  int xmax =0;
+  int ymax =0;
+
 
 // The function to describe a line 
 float f(float x) {
@@ -25,9 +27,15 @@ float f(float x) {
 
 void setup() 
 {
+  xmin = 0;
+  ymin = 0;
+  xmax =width;
+  ymax =height;
+  
   size(840, 560);
   int division=width/numberOfPartitions;
-  
+
+
   linesPosition[0]=division;
   if(numberOfPartitions>2)
   {
@@ -37,19 +45,45 @@ void setup()
     }
   }
   
+  
  
   
   // The perceptron has 3 inputs -- x, y, and bias
-  // Second value is "Learning Constant"
-  ptron = new Perceptron(3, 0.00001);  // Learning Constant is low just b/c it's fun to watch, this is not necessarily optimal
+  // Second value is "Learning = new Perceptron(3, 0.00001,numberOfPartitions);  // Learning Constant is low just b/c it's fun to watch, this is not necessarily optimal
+  ptron = new Perceptron(3, 0.00001,numberOfPartitions);  // Learning Constant is low just b/c it's fun to watch, this is not necessarily optimal
 
   // Create a random set of training points and calculate the "known" answer
-  for (int i = 0; i < training.length; i++) {
-    float x = random(xmin, xmax);
-    float y = random(ymin, ymax);
-    int answer = 1;
-    if (y < f(x)) answer = -1;
-    training[i] = new Trainer(x, y, answer);
+  for (int i = 0; i < training.length; i++) 
+  {
+    float x = random(xmin,xmax);
+    float y = random(ymin,ymax);
+    int answer = 0;
+   
+   if(numberOfPartitions==2)
+   {
+     if(x<=division)
+     {
+       answer=0;
+     }else
+     {
+       answer=1;
+     }
+   }else
+   {
+     if(x>linesPosition[linesPosition.length-1])
+     {
+       answer=linesPosition.length-2;
+     } else
+     {
+       while(x>=linesPosition[answer])
+       {
+         answer++;
+       }
+     }
+     
+   
+   }
+    training[i] = new Trainer(x, y, answer+1);
   }
   smooth();
 }
@@ -62,47 +96,34 @@ void draw() {
   {
     line(linesPosition[x],0,linesPosition[x],height);
   }
-  translate(width/2,height/2);
-
-  // Draw the line
-  strokeWeight(4);
-  stroke(127);
-  float x1 = xmin;
-  float y1 = f(x1);
-  float x2 = xmax;
-  float y2 = f(x2);
-  line(x1,y1,x2,y2);
-
-  // Draw the line based on the current weights
-  // Formula is weights[0]*x + weights[1]*y + weights[2] = 0
-  stroke(0);
-  strokeWeight(1);
-  float[] weights = ptron.getWeights();
-  x1 = xmin;
-  y1 = (-weights[2] - weights[0]*x1)/weights[1];
-  x2 = xmax;
-  y2 = (-weights[2] - weights[0]*x2)/weights[1];
-   line(x1,y1,x2,y2);
-
+  
+ /* strokeWeight(1);
+  for (int i = 0; i < training.length; i++) 
+  {
+    
+    ellipse(training[i].inputs[0], training[i].inputs[1], 8, 8);
+    
+  }*/
+  
+ 
 
 
   // Train the Perceptron with one "training" point at a time
-  ptron.train(training[count].inputs, training[count].answer);
-  
+  ptron.train(training[count].inputs, training[count].answer,numberOfPartitions);
+
   count = (count + 1) % training.length;
 
   // Draw all the points based on what the Perceptron would "guess"
   // Does not use the "known" correct answer
-  for (int i = 0; i < count; i++) {
+  
+  for (int i = 0; i < count; i++) 
+  {
     stroke(0);
     strokeWeight(1);
-    fill(0);
-    int guess = ptron.feedforward(training[i].inputs);
-    if (guess > 0)
-    {
-      noFill();
-    } 
-
+   
+    int guess = ptron.feedforward(training[i].inputs,numberOfPartitions);
+    fill(guess*100,guess*45,guess*62);
     ellipse(training[i].inputs[0], training[i].inputs[1], 8, 8);
   }
+    
 }
