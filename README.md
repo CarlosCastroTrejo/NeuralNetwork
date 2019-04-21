@@ -1,0 +1,1 @@
+This is our final project from Algorithms, this neural network is suppose to learn how to arrange different dot colors through the canvas.
